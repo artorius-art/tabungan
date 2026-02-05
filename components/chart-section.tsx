@@ -56,8 +56,8 @@ export function ChartSection({ allData }: ChartSectionProps) {
     }, {} as Record<string, { positive: number, negative: number }>)
   ).map(([month, data]) => ({
     month,
-    positive: data.positive,
-    negative: data.negative
+    positive: (data as { positive: number, negative: number }).positive,
+    negative: (data as { positive: number, negative: number }).negative
   })).slice(0, 6)
 
   // Custom tooltip for pie chart
