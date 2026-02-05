@@ -19,8 +19,8 @@ export default function FormPage() {
   const { darkMode } = useDarkMode()
   
   // Get the current tab from URL parameter
-  const currentTab = searchParams.get('tab') || 'tabungan'
-  const editId = searchParams.get('edit')
+  const currentTab = searchParams?.get('tab') || 'tabungan'
+  const editId = searchParams?.get('edit')
   
   const [formData, setFormData] = useState({
     nominal: '',
