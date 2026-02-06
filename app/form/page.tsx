@@ -18,9 +18,16 @@ export default function FormPage() {
   const { user } = useAuth()
   const { darkMode } = useDarkMode()
   
+  // Check if we're on the client side
+  const [isClient, setIsClient] = useState(false)
+  
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
   // Get the current tab from URL parameter
-  const currentTab = searchParams?.get('tab') || 'tabungan'
-  const editId = searchParams?.get('edit')
+  const currentTab = isClient && searchParams ? searchParams.get('tab') || 'tabungan' : 'tabungan'
+  const editId = isClient && searchParams ? searchParams.get('edit') : null
   
   const [formData, setFormData] = useState({
     nominal: '',
@@ -59,7 +66,7 @@ export default function FormPage() {
 
   // Fetch existing data for editing
   const fetchEditData = async () => {
-    if (!editId) return
+    if (!editId || !isClient) return
     
     try {
       const { data, error } = await supabase
@@ -87,7 +94,7 @@ export default function FormPage() {
 
   useEffect(() => {
     fetchEditData()
-  }, [editId])
+  }, [editId, isClient])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -179,6 +186,18 @@ export default function FormPage() {
       ...prev,
       nominal: formattedValue
     }))
+  }
+
+  // Don't render until we're on the client side
+  if (!isClient) {
+    return (
+      <div className="container mx-auto p-4 max-w-lg">
+        <div className="text-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-2 text-sm text-gray-600">Loading...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
